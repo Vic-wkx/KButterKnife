@@ -1,0 +1,3 @@
+rootProject.name = "KButterKnife"
+include ':app'
+include ':kbutterknife'

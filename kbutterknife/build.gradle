@@ -1,0 +1,9 @@
+plugins {
+    id 'java-library'
+    id 'kotlin'
+}
+
+dependencies {
+    compileOnly 'com.google.android:android:4.1.1.4'
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
