@@ -7,6 +7,7 @@ import java.lang.StringBuilder
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
+import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
 
 const val SUFFIX = "_ViewInjector"
@@ -19,14 +20,30 @@ class KButterKnifeProcessor : AbstractProcessor() {
         // Save all @BindView annotations to map
         roundEnv?.getElementsAnnotatedWith(BindView::class.java)?.forEach { element ->
             val enclosingElement = element.enclosingElement as TypeElement
-            var injections = injectionsByClass[enclosingElement]
-            if (injections == null) {
-                injections = mutableSetOf()
-                injectionsByClass[enclosingElement] = injections
+            var fidleInjections = injectionsByClass[enclosingElement]
+            if (fidleInjections == null) {
+                fidleInjections = mutableSetOf()
+                injectionsByClass[enclosingElement] = fidleInjections
             }
-            val variableName = element.simpleName.toString()
-            val value = element.getAnnotation(BindView::class.java).value
-            injections.add(InjectionPoint(variableName, value))
+            val fieldName = element.simpleName.toString()
+            val id = element.getAnnotation(BindView::class.java).value
+            fidleInjections.add(InjectionPoint(id, fieldName = fieldName))
+        }
+
+        // Save all @OnClick annotations to map
+        roundEnv?.getElementsAnnotatedWith(OnClick::class.java)?.forEach { element ->
+            val executableElement = element as ExecutableElement
+            val enclosingElement = element.enclosingElement as TypeElement
+            var methodInjections = injectionsByClass[enclosingElement]
+            if (methodInjections == null) {
+                methodInjections = mutableSetOf()
+                injectionsByClass[enclosingElement] = methodInjections
+            }
+            val methodName = executableElement.simpleName.toString()
+            val methodType = executableElement.parameters.firstOrNull()?.asType()?.toString()
+            element.getAnnotation(OnClick::class.java).value.forEach { id ->
+                methodInjections.add(InjectionPoint(id, methodName = methodName, methodType = methodType))
+            }
         }
 
         // Default generated dir path: app\build\generated\source\kaptKotlin\debug
@@ -44,7 +61,11 @@ class KButterKnifeProcessor : AbstractProcessor() {
 
             val injections = StringBuilder()
             injection.value.forEach {
-                injections.appendLine(String.format(INJECTION, it.variableName, it.value))
+                if (it.fieldName != null) {
+                    injections.appendLine(String.format(FIELD_INJECTION, it.fieldName, it.id))
+                } else if (it.methodName != null) {
+                    injections.appendLine(String.format(METHOD_INJECTION, it.id, it.methodName, if (it.methodType == null) "" else "it as ${it.methodType}"))
+                }
             }
 
             val file = File(filePath, "$className.kt")

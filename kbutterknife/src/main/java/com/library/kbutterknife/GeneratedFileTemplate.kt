@@ -18,4 +18,5 @@ class %s() {
     }
 }"""
 
-const val INJECTION = "        activity.%s = activity.findViewById(%s)"
+const val FIELD_INJECTION = "        activity.%s = activity.findViewById(%s)"
+const val METHOD_INJECTION = "        activity.findViewById<android.view.View>(%s).setOnClickListener { activity.%s(%s) }"
