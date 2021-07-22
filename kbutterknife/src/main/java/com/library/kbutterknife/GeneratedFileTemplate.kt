@@ -6,7 +6,9 @@ package com.library.kbutterknife
  *
  *  class MainActivity_ViewInjector() {
  *      fun inject(activity: MainActivity) {
- *          activity.tv = activity.findViewById(R.id.tv)
+ *          activity.btnBindView = activity.findViewById(2131230808)
+ *          activity.findViewById<android.view.View>(2131230809).setOnClickListener { activity.startSecondActivity() }
+ *
  *      }
  *  }
  */

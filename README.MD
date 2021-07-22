@@ -4,7 +4,9 @@
 
 用于解析 [ButterKnife](https://github.com/JakeWharton/butterknife) 原理的库，采用 Kotlin 语言，博客有详解：
 
-[手写 KButterKnife 框架 —— 编译期注解处理技术](https://www.jianshu.com/p/9aa8019d4eba)
+[手写 KButterKnife 框架（一） —— 编译期注解处理技术](https://www.jianshu.com/p/9aa8019d4eba)
+
+[手写 KButterKnife 框架（二） —— @OnClick](https://www.jianshu.com/p/2c60e19bb30c)
 
 ## :bulb: 注意事项
 

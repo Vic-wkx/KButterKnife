@@ -20,14 +20,14 @@ class KButterKnifeProcessor : AbstractProcessor() {
         // Save all @BindView annotations to map
         roundEnv?.getElementsAnnotatedWith(BindView::class.java)?.forEach { element ->
             val enclosingElement = element.enclosingElement as TypeElement
-            var fidleInjections = injectionsByClass[enclosingElement]
-            if (fidleInjections == null) {
-                fidleInjections = mutableSetOf()
-                injectionsByClass[enclosingElement] = fidleInjections
+            var fieldInjections = injectionsByClass[enclosingElement]
+            if (fieldInjections == null) {
+                fieldInjections = mutableSetOf()
+                injectionsByClass[enclosingElement] = fieldInjections
             }
             val fieldName = element.simpleName.toString()
             val id = element.getAnnotation(BindView::class.java).value
-            fidleInjections.add(InjectionPoint(id, fieldName = fieldName))
+            fieldInjections.add(InjectionPoint(id, fieldName = fieldName))
         }
 
         // Save all @OnClick annotations to map
